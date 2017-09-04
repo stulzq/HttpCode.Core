@@ -18,38 +18,7 @@ namespace HttpCode.Core
     /// </summary>
     public class Wininet
     {
-        #region WininetAPI
-        /// <summary>
-        /// 设置系统时间API
-        /// </summary>
-        /// <param name="sysTime">系统时间</param>
-        /// <returns></returns>
-        [DllImport("Kernel32.dll")]
-        public static extern bool SetLocalTime(ref SystemTime sysTime);
-        /// <summary>
-        /// 获取系统时间API
-        /// </summary>
-        /// <param name="sysTime">系统时间</param>
-        [DllImport("Kernel32.dll")]
-        public static extern void GetLocalTime(ref SystemTime sysTime);
 
-        [DllImport("wininet.dll", CharSet = CharSet.Auto)]
-        private static extern int InternetOpen(string strAppName, int ulAccessType, string strProxy, string strProxyBypass, int ulFlags);
-        [DllImport("wininet.dll", CharSet = CharSet.Auto)]
-        private static extern int InternetConnect(int ulSession, string strServer, int ulPort, string strUser, string strPassword, int ulService, int ulFlags, int ulContext);
-        [DllImport("wininet.dll", CharSet = CharSet.Auto)]
-        private static extern bool InternetCloseHandle(int ulSession);
-        [DllImport("wininet.dll", CharSet = CharSet.Auto)]
-        private static extern bool HttpAddRequestHeaders(int hRequest, string szHeasers, uint headersLen, uint modifiers);
-        [DllImport("wininet.dll", CharSet = CharSet.Auto)]
-        private static extern int HttpOpenRequest(int hConnect, string szVerb, string szURI, string szHttpVersion, string szReferer, string accetpType, int dwflags, int dwcontext);
-        [DllImport("wininet.dll")]
-        private static extern bool HttpSendRequestA(int hRequest, string szHeaders, int headersLen, string options, int optionsLen);
-        [DllImport("wininet.dll", CharSet = CharSet.Auto)]
-        private static extern bool InternetReadFile(int hRequest, byte[] pByte, int size, out int revSize);
-        [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool InternetGetCookieEx(string pchURL, string pchCookieName, StringBuilder pchCookieData, ref System.UInt32 pcchCookieData, int dwFlags, IntPtr lpReserved);
-        #endregion
 
         #region 字段/属性
         /// <summary>
@@ -69,56 +38,7 @@ namespace HttpCode.Core
 
         #endregion
 
-        #region API设置/获取 系统时间
-        /// <summary>
-        /// 使用API获取本地时间
-        /// </summary>
-        /// <returns></returns>
-        public DateTime GetLocalTime()
-        {
-            SystemTime sysTime = new SystemTime();
-            GetLocalTime(ref sysTime);
-            DateTime dt = new DateTime(sysTime.wYear, sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond);
-            return dt;
-        }
-        /// <summary>
-        /// 使用API设置本地时间
-        /// </summary>
-        /// <param name="dt"></param>
-        public void SetLocalTime(DateTime dt)
-        {
-            SystemTime sysTime = new SystemTime();
-            sysTime.wYear = (ushort)dt.Year;
-            sysTime.wMonth = (ushort)dt.Month;
-            sysTime.wDay = (ushort)dt.Day;
-            sysTime.wHour = (ushort)dt.Hour;
-            sysTime.wMinute = (ushort)dt.Minute;
-            sysTime.wSecond = (ushort)dt.Second;
-            SetLocalTime(ref sysTime);
-        }
-        #endregion
 
-        #region Get/Post 方法
-        /// <summary>
-        /// WinInet 方式GET
-        /// </summary>
-        /// <param name="Url">地址</param>
-        /// <returns></returns>
-        public string GetData(string Url)
-        {
-            using (MemoryStream ms = GetHtml(Url, ""))
-            {
-                if (ms != null)
-                {
-                    //无视编码
-                    return EncodingPack(ms);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
         /// <summary>
         /// 自动解析编码
         /// </summary>
@@ -161,74 +81,7 @@ namespace HttpCode.Core
                 }
             }
         }
-        /// <summary>
-        /// POST
-        /// </summary>
-        /// <param name="Url">地址</param>
-        /// <param name="postData">提交数据</param>
-        ///  <param name="Header">自定义数据头</param>
-        /// <returns></returns>
-        public string PostData(string Url, string postData, StringBuilder Header = null)
-        {
-            using (MemoryStream ms = GetHtml(Url, postData, Header))
-            {
-                return EncodingPack(ms);
-            }
-        }
-        /// <summary>
-        /// GET（UTF-8）模式
-        /// </summary>
-        /// <param name="Url">地址</param>
-        /// <returns></returns>
-        public string GetUtf8(string Url)
-        {
-            using (MemoryStream ms = GetHtml(Url, ""))
-            {
-                return Encoding.GetEncoding("UTF-8").GetString(ms.ToArray());
-            }
-        }
-        /// <summary>
-        /// POST（UTF-8）
-        /// </summary>
-        /// <param name="Url">地址</param>
-        /// <param name="postData">提交数据</param>
-        ///  <param name="Header">自定义数据头</param>
-        /// <returns></returns>
-        public string PostUtf8(string Url, string postData, StringBuilder Header = null)
-        {
-            using (MemoryStream ms = GetHtml(Url, postData, Header))
-            {
-                return Encoding.GetEncoding("UTF-8").GetString(ms.ToArray());
-            }
-        }
-        /// <summary>
-        /// 获取网页图片(Image)
-        /// </summary>
-        /// <param name="Url">图片地址</param>
-        /// <returns></returns>
-        public Image GetImage(string Url)
-        {
-            using (MemoryStream ms = GetHtml(Url, ""))
-            {
-                if (ms == null)
-                {
-                    return null;
-                }
-                Image img = Image.FromStream(ms);
-                return img;
-            }
-        }
-        public byte[] GetImageByte(string url)
-        {
-            using (MemoryStream ms = GetHtml(url, ""))
-            {
-                if (ms == null)
-                {
-                    return null;
-                } 
-                return ms.ToArray();
-            }
-        }
+
         /// <summary>
         /// 获取网页图片(Image)
         /// </summary>
@@ -247,297 +100,9 @@ namespace HttpCode.Core
             }
         }
 
-        /// <summary>
-        /// 重载提交数据(允许使用代理)
-        /// </summary>
-        /// <param name="Url">请求地址</param>
-        /// <param name="Postdata">提交的数据(Get时为空)</param>
-        /// <param name="proxy">代理地址(IP:端口 例如 127.0.0.1:8888)</param>
-        /// <param name="subcookie">设置cookie, 如果自定义了协议头,则需要置为True</param>
-        /// <param name="subheader">设置数据头,如非需要可不填写</param>
-        /// <param name="isMoved">是否允许跳转(允许3xx 跳转)</param>
-        /// <returns></returns>
-        public MemoryStream GetHtmlPro(string Url, string Postdata, string proxy = null, bool subcookie = false, string subheader = null, bool isMoved = true)
-        {
-            try
-            {
-                //声明部分变量
-                Uri uri = new Uri(Url);
-                //判断访问方式
-                string Method = "GET";
-                if (string.IsNullOrEmpty(Postdata))
-                {
-                    Method = "GET";
-                }
-                else
-                {
-                    Method = "POST";
-                }
-                //判断是否是https
-                bool https = Url.Substring(0, 5) == "https" ? true : false;
-                //判断是否开启代理访问
-                int hSession = 0;//会话句柄
-                if (string.IsNullOrEmpty(proxy))
-                {
-                    hSession = InternetOpen(UserAgent, 1, string.Empty, string.Empty, 0);
-                }
-                else if (https)
-                {
-                    hSession = InternetOpen(UserAgent, 3, proxy, string.Empty, 0);
-                }
-                else
-                {
-                    hSession = InternetOpen(UserAgent, 3, "http=" + proxy, string.Empty, 0);
-                }
 
-                if (hSession == 0)
-                {
-                    InternetCloseHandle(hSession);
-                    return null;//Internet句柄获取失败则返回
-                }
-                int hConnect = InternetConnect(hSession, uri.Host, uri.Port, string.Empty, string.Empty, 3, 0, 0);//连接句柄
-                if (hConnect == 0)
-                {
-                    InternetCloseHandle(hConnect);
-                    InternetCloseHandle(hSession);
-                    return null;//Internet连接句柄获取失败则返回
-                }
-
-                //请求标记
-                uint gettype = 2147483648 | 16;
-                //是否带入cookie
-                if (subcookie)
-                {
-                    gettype = gettype | 524288;
-                }
-                //是否重定向,true重定向，false不重定向
-                if (!isMoved)
-                {
-                    gettype = gettype | 2097152;
-                }
-                if (https)
-                {
-                    gettype = gettype | 8388608;
-                }
-                else
-                {
-                    gettype = gettype | 16384;
-                }
-
-                //取HTTP请求句柄
-                int hRequest = HttpOpenRequest(hConnect, Method, uri.PathAndQuery, "HTTP/1.1", string.Empty, string.Empty, (int)gettype, 0);//请求句柄
-                if (hRequest == 0)
-                {
-                    InternetCloseHandle(hRequest);
-                    InternetCloseHandle(hConnect);
-                    InternetCloseHandle(hSession);
-                    return null;//HTTP请求句柄获取失败则返回
-                }
-
-                //添加HTTP头
-                string sb = string.Empty;
-                if (string.IsNullOrEmpty(subheader))
-                {
-                    //如果提交协议头为空则使用内置的
-                    sb += "Accept:text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\n";
-                    sb += "Content-Type:application/x-www-form-urlencoded\r\n";
-                    sb += "Accept-Language:zh-cn\r\n";
-                    sb += "Referer:" + Url;
-                }
-                else
-                {
-                    sb = subheader;
-                }
-
-                //获取返回数据
-                if (string.Equals(Method, "GET", StringComparison.OrdinalIgnoreCase))
-                {
-                    HttpSendRequestA(hRequest, sb.ToString(), sb.Length, string.Empty, 0);
-                }
-                else
-                {
-                    HttpSendRequestA(hRequest, sb.ToString(), sb.Length, Postdata, Postdata.Length);
-                }
-
-                //处理返回数据
-                int revSize = 0;//计次
-                byte[] bytes = new byte[1024];
-                MemoryStream ms = new MemoryStream();
-                while (true)
-                {
-                    bool readResult = InternetReadFile(hRequest, bytes, 1024, out revSize);
-                    if (readResult && revSize > 0)
-                    {
-                        ms.Write(bytes, 0, revSize);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                InternetCloseHandle(hRequest);
-                InternetCloseHandle(hConnect);
-                InternetCloseHandle(hSession);
-                return ms;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// 请求数据
-        /// </summary>
-        /// <param name="Url">请求地址</param>
-        /// <param name="Postdata">提交的数据</param>
-        /// <param name="Header">自定义请求头</param>
-        /// <returns>返回内存流</returns>
-        private MemoryStream GetHtml(string Url, string Postdata, StringBuilder Header = null)
-        {
-            try
-            {
-                //声明部分变量
-                Uri uri = new Uri(Url);
-                string Method = "GET";
-                if (Postdata != "")
-                {
-                    Method = "POST";
-                }
-
-                int hSession = InternetOpen(UserAgent, 1, "", "", 0);//会话句柄
-                if (hSession == 0)
-                {
-                    InternetCloseHandle(hSession);
-                    return null;//Internet句柄获取失败则返回
-                }
-                int hConnect = InternetConnect(hSession, uri.Host, uri.Port, "", "", 3, 0, 0);//连接句柄
-                if (hConnect == 0)
-                {
-                    InternetCloseHandle(hConnect);
-                    InternetCloseHandle(hSession);
-                    return null;//Internet连接句柄获取失败则返回
-                }
-                //请求标记
-                int gettype = -2147483632;
-                if (Url.Substring(0, 5) == "https")
-                {
-                    gettype = -2139095024;
-                }
-                else
-                {
-                    gettype = -2147467248;
-                }
-                //取HTTP请求句柄
-                int hRequest = HttpOpenRequest(hConnect, Method, uri.PathAndQuery, "HTTP/1.1", "", "", gettype, 0);//请求句柄
-                if (hRequest == 0)
-                {
-                    InternetCloseHandle(hRequest);
-                    InternetCloseHandle(hConnect);
-                    InternetCloseHandle(hSession);
-                    return null;//HTTP请求句柄获取失败则返回
-                }
-                //添加HTTP头
-                StringBuilder sb = new StringBuilder();
-                if (Header == null)
-                {
-                    sb.Append("Accept:text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\n");
-                    sb.Append("Content-Type:application/x-www-form-urlencoded\r\n");
-                    sb.Append("Accept-Language:zh-cn\r\n");
-                    sb.Append("Referer:" + Url);
-                }
-                else
-                {
-                    sb = Header;
-                }
-                //获取返回数据
-                if (string.Equals(Method, "GET", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (_WininetTimeOut > 0)
-                    {
-                        System.Threading.Thread th = new System.Threading.Thread(new System.Threading.ThreadStart(delegate
-                        {
-
-                            HttpSendRequestA(hRequest, sb.ToString(), sb.Length, "", 0);
-                        }));
-                        th.Start();
-                        th.Join(_WininetTimeOut); //阻塞
-                    }
-                    else
-                    {
-                        HttpSendRequestA(hRequest, sb.ToString(), sb.Length, "", 0);
-                    }
-                }
-                else
-                {
-                    if (_WininetTimeOut > 0)
-                    {
-                        System.Threading.Thread th = new System.Threading.Thread(new System.Threading.ThreadStart(delegate
-                        {
-
-                            HttpSendRequestA(hRequest, sb.ToString(), sb.Length, Postdata, Postdata.Length);
-                        }));
-                        th.Start();
-                        th.Join(_WininetTimeOut); //阻塞
-                    }
-                    else
-                    {
-                        HttpSendRequestA(hRequest, sb.ToString(), sb.Length, Postdata, Postdata.Length);
-                    }
-
-                }
-                //处理返回数据
-                int revSize = 0;//计次
-                byte[] bytes = new byte[1024];
-                MemoryStream ms = new MemoryStream();
-                while (true)
-                {
-                    bool readResult = InternetReadFile(hRequest, bytes, 1024, out revSize);
-                    if (readResult && revSize > 0)
-                    {
-                        ms.Write(bytes, 0, revSize);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                InternetCloseHandle(hRequest);
-                InternetCloseHandle(hConnect);
-                InternetCloseHandle(hSession);
-                return ms;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        #endregion
 
         #region Cookie操作方法
-
-        /// <summary>
-        /// 取 IE/Webbrowser Cookie
-        /// </summary>
-        /// <param name="url">完整的链接格式</param>
-        /// <returns></returns>
-        public string GetCookies(string url)
-        {
-            uint datasize = 256;
-            StringBuilder cookieData = new StringBuilder((int)datasize);
-            if (!InternetGetCookieEx(url, null, cookieData, ref datasize, 0x2000, IntPtr.Zero))
-            {
-                if (datasize < 0)
-                    return null;
-
-                cookieData = new StringBuilder((int)datasize);
-                if (!InternetGetCookieEx(url, null, cookieData, ref datasize, 0x00002000, IntPtr.Zero))
-                    return null;
-            }
-            return cookieData.ToString() + ";";
-        }
         /// <summary>
         /// 遍历CookieContainer 转换为Cookie集合对象
         /// </summary>
@@ -763,22 +328,7 @@ namespace HttpCode.Core
             System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
             return ((time - startTime).TotalSeconds).ToString();
         }
-        /// <summary>
-        /// 使用API获取本地时间
-        /// </summary>
-        /// <returns>返回本地电脑的Datatime数据</returns>
-        public DateTime GetLocalTime()
-        {
-            return wnet.GetLocalTime();
-        }
-        /// <summary>
-        /// 使用API设置本地时间
-        /// </summary>
-        /// <param name="dt">需要设置的时间</param>
-        public void SetLocalTime(DateTime dt)
-        {
-            wnet.SetLocalTime(dt);
-        }
+
         /// <summary>
         /// 获取服务器返回的时间,如果Header中没有Date则返回当前时间
         /// </summary>
@@ -1410,15 +960,7 @@ namespace HttpCode.Core
             }
 
         }
-        /// <summary>
-        /// 从Wininet中获取Cookie对象
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public string GetCookieByWininet(string url)
-        {
-            return wnet.GetCookies(url);
-        }
+
         /// <summary>
         /// 获取当前请求所有Cookie
         /// </summary>
@@ -2183,53 +1725,9 @@ namespace HttpCode.Core
         {
 			return await http.GetHtmlAsync(objHttpItems);
 		}
-        /// <summary>
-        /// WinInet方式GET请求  直接返回网页内容
-        /// </summary>
-        /// <param name="url">请求地址</param>
-        /// <returns></returns>
-        public string GetHtmlByWininet(string url)
-        {
-            return wnet.GetData(url);
-        }
-        /// <summary>
-        /// WinInet方式GET请求(UTF8)  直接返回网页内容
-        /// </summary>
-        /// <param name="url">请求地址</param>
-        /// <returns></returns>
-        public string GetHtmlByWininetUTF8(string url)
-        {
-            return wnet.GetUtf8(url);
-        }
-        /// <summary>
-        /// WinInet方式POST请求  直接返回网页内容
-        /// </summary>
-        /// <param name="url">提交地址</param>
-        /// <param name="postdata">提交内容</param>
-        /// <returns></returns>
-        public string POSTHtmlByWininet(string url, string postdata)
-        {
-            return wnet.PostData(url, postdata);
-        }
-        /// <summary>
-        /// WinInet方式POST请求  直接返回网页内容
-        /// </summary>
-        /// <param name="url">提交地址</param>
-        /// <param name="postdata">提交内容</param>
-        /// <returns></returns>
-        public string POSTHtmlByWininetUTF8(string url, string postdata)
-        {
-            return wnet.PostData(url, postdata);
-        }
-        /// <summary>
-        /// WinInet方式请求 图片  直接返回Image
-        /// </summary>
-        /// <param name="url">提交地址</param>
-        /// <returns></returns>
-        public Image GetImageByWininet(string url)
-        {
-            return wnet.GetImage(url);
-        }
+
+
         #endregion
     }
+	
 }

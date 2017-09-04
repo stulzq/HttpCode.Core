@@ -129,3 +129,44 @@ hr.StatusCode //Http请求后的状态码
  
 hr.StatusDescription //请求后的状态信息          
 ```
+
+#### 使用HttpCode.Core发起Get请求
+1. 方法一 使用HttpHelpers类获取结果
+```csharp
+string url = "bbs.msdn5.com";//请求地址
+ 
+string res = string.Empty;//请求结果,请求类型不是图片时有效
+ 
+System.Net.CookieContainer cc = new System.Net.CookieContainer();//自动处理Cookie对象
+ 
+HttpHelpers helper = new HttpHelpers();//发起请求对象
+ 
+HttpItems items = new HttpItems();//请求设置对象
+ 
+HttpResults hr = new HttpResults();//请求结果
+ 
+items.URL = url; //设置请求地址
+ 
+items.Container = cc;//自动处理Cookie时,每次提交时对cc赋值即可
+ 
+hr = helper.GetHtml(items);//发起请求
+ 
+res = hr.Html;//得到请求结果
+```
+2. 方法二 使用XJHTTP类获取结果
+```csharp
+XJHTTP xjhttp = new XJHTTP();
+ 
+CookieContainer cc = new CookieContainer();//自动处理cookie
+ 
+string referer = "www.msdn5.com"; //referer头数据,如果没有请留空
+ 
+string postdata = "这里是提交的数据"; //post提交数据
+ 
+HttpResults hr = xjhttp.PostHtml(PostUrl, referer, postdata, false, cc);
+ 
+参数说明:
+xjhttp.PostHtml("提交的url", "Referer数据头","提交的数据", "Ajax标志不需要时请填写false", "自动处理Cookie对象");
+```
+
+
