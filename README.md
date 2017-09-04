@@ -1,6 +1,8 @@
 # HttpCode.Core
 简单、易用、高效 一个有态度的开源.Net Http请求框架!
 
+[![Latest version](https://img.shields.io/nuget/v/HttpCode.Core.svg)](https://www.nuget.org/packages/HttpCode.Core/) 
+
 **HttpCode.Core**是**HttpCode**（https://github.com/msdn5/HttpCodeLib ） 的.net standard 2.0 实现，.net core、.net framework都可以使用，更改了异步方法的实现。
 
 ### 类库基本功能:
