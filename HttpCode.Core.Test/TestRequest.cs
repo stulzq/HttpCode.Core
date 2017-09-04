@@ -30,7 +30,7 @@ namespace HttpCode.Core.Test
 	        hr = await helper.GetHtmlAsync(items);//发起异步请求
 
 	        res = hr.Html;//得到请求结果
-
+			
 			Assert.NotNull(hr);
 		}
     }

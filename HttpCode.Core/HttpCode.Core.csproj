@@ -7,6 +7,7 @@
     <Description>简单、易用、高效 一个有态度的开源.Net Http请求框架!可以用制作爬虫，api请求等等。让你感受一个简易到极致的HTTP编程. 让编程更简易,代码更简洁。</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/stulzq/HttpCode.Core</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/stulzq/HttpCode.Core/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
