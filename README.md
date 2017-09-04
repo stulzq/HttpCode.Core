@@ -1,9 +1,9 @@
-#HttpCode 
+# HttpCode 
 简单、易用、高效 一个有态度的开源.Net Http请求框架!
 
 HttpCode.Core是HttpCode（https://github.com/msdn5/HttpCodeLib ） 的.net standard 2.0 实现，.net core、.net framework都可以使用，更改了异步方法的实现。
 
-###类库基本功能:
+### 类库基本功能:
 - 基础功能1:基于HttpWebRequest方式 同步/异步 提交数据 包含(Get/Post)
 - 基础功能2:基于Wininet系统API方式提交数据 包含(Get/Post)
 - 基础功能3:集合常用处理方法.处理页面结果/HTML数据更快捷
