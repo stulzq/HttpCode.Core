@@ -5,10 +5,13 @@ namespace HttpCode.Core.Test
 {
     public class TestRequest
     {
-        [Fact]
+		/// <summary>
+		/// 测试异步请求
+		/// </summary>
+		[Fact]
         public async void TestGetRequestAsync()
         {
-	        string url = "bbs.msdn5.com";//请求地址
+	        string url = "https://github.com/stulzq/HttpCode.Core";//请求地址
 
 	        string res = string.Empty;//请求结果,请求类型不是图片时有效
 
@@ -27,6 +30,8 @@ namespace HttpCode.Core.Test
 	        hr = await helper.GetHtmlAsync(items);//发起异步请求
 
 	        res = hr.Html;//得到请求结果
+
+			Assert.NotNull(hr);
 		}
     }
 }

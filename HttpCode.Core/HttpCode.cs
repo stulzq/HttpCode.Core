@@ -141,16 +141,66 @@ namespace HttpCode.Core
 
             return _result;
         }
-        #endregion
 
-        #region 解析数据与处理数据
+	    /// <summary>
+	    /// 根据传入的数据，得到相应页面数据 异步
+	    /// </summary>
+	    /// <param name="objHttpItems">请求设置参数</param>
+	    /// <returns>请求结果</returns>
+	    private async  Task<HttpResults> GetHttpRequestDataAsync(HttpItems objHttpItems)
+	    {
 
-        /// <summary>
-        /// 处理响应结果
-        /// </summary>
-        /// <param name="objHttpItems">请求设置参数</param>
-        /// <returns></returns>
-        private HttpResults GetResponesInfo(ref HttpItems objHttpItems)
+		    try
+		    {
+			    #region 设置请求参数
+			    SetRequest(objHttpItems);
+			    #endregion
+
+			    #region 获得应答结果
+
+			    _response = (HttpWebResponse) await _request.GetResponseAsync();
+			    return GetResponesInfo(ref objHttpItems);
+			    #endregion
+		    }
+		    catch (WebException ex)
+		    {
+			    #region 获取异常数据与结果
+			    _result.Html = ex.Message;
+			    _response = (HttpWebResponse)ex.Response;
+			    if (_response != null)
+			    {
+				    _result.StatusCode = _response.StatusCode;
+				    _result.StatusDescription = ex.Message;
+				    try
+				    {
+					    return GetResponesInfo(ref objHttpItems);
+				    }
+				    catch
+				    {
+					    return _result;
+				    }
+
+			    }
+			    else
+			    {
+				    _result.StatusCode = HttpStatusCode.NotFound;
+				    _result.StatusDescription = ex.Message;
+			    }
+			    #endregion
+		    }
+
+		    return _result;
+	    }
+		#endregion
+
+		#region 解析数据与处理数据
+
+		/// <summary>
+		/// 处理响应结果
+		/// </summary>
+		/// <param name="objHttpItems">请求设置参数</param>
+		/// <returns></returns>
+		private HttpResults GetResponesInfo(ref HttpItems objHttpItems)
         {
 
             #region 设置返回结果
@@ -346,7 +396,7 @@ namespace HttpCode.Core
         /// <param name="objHttpItems">参数列表</param>
         public async Task<HttpResults> GetHtmlAsync(HttpItems objHttpItems)
         {
-	        return await Task.Run(() => GetHtml(objHttpItems));
+	        return await GetHttpRequestDataAsync(objHttpItems);
         }
 		#endregion
 
