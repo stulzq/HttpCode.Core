@@ -8,10 +8,9 @@
 - 基础功能2:基于Wininet系统API方式提交数据 包含(Get/Post)
 - 基础功能3:集合常用处理方法.处理页面结果/HTML数据更快捷
 
-> HttpCode类库,让你感受一个简易到极致的HTTP编程.
-让编程更简易,代码更简洁... 
-版权声明: 
-本类库完全开源,只是基于微软官方提供的HttpWebRequest实现同步与异步的请求,Wininet是基于底层API进行封装;
-Coding by **君临** 
-09-27/2014
-.net standard 2.0 implement by stulzq（xcmaster）
+> HttpCode类库,让你感受一个简易到极致的HTTP编程. 
+让编程更简易,代码更简洁...  
+版权声明:  
+本类库完全开源,只是基于微软官方提供的HttpWebRequest实现同步与异步的请求,Wininet是基于底层API进行封装; 
+Coding by **君临** 09-27/2014  
+.net standard 2.0 implement by stulzq（xcmaster）09-01/2017
