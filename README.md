@@ -170,6 +170,53 @@ HttpResults hr = xjhttp.PostHtml(PostUrl, referer, postdata, false, cc);
 xjhttp.PostHtml("提交的url", "Referer数据头","提交的数据", "Ajax标志不需要时请填写false", "自动处理Cookie对象");
 ```
 
+#### 使用HttpCode.Core发起Post请求
+1. 方法一： 使用HttpHelpers类获取结果
+```csharp
+string url = "bbs.msdn5.com";//请求地址
+ 
+string res = string.Empty;//请求结果,请求类型不是图片时有效
+ 
+string pdata = "post时所需要的数据";//提交数据(必须项)
+ 
+System.Net.CookieContainer cc = new System.Net.CookieContainer();//自动处理Cookie对象
+ 
+HttpHelpers helper = new HttpHelpers();//发起请求对象
+ 
+HttpItems items = new HttpItems();//请求设置对象
+ 
+HttpResults hr = new HttpResults();//请求结果
+ 
+items.URL = url;//请求的url地址
+ 
+items.Referer = "referer如果有请携带"; //referer头,如果需要请填写
+ 
+items.Container = cc;//自动处理Cookie时,每次提交时对cc赋值即可
+ 
+items.Postdata = pdata;//提交的数据
+ 
+items.Method = "Post";//设置提交方式为post方式提交(默认为Get方式提交)
+ 
+hr = helper.GetHtml(items);//发起请求并获得结果
+ 
+res = hr.Html;//得到请求结果
+```
+2. 方法二： 使用XJHTTP类获取结果
+```csharp
+XJHTTP xjhttp = new XJHTTP();
+ 
+CookieContainer cc = new CookieContainer();//自动处理cookie
+ 
+string referer = "www.msdn5.com"; //referer头数据,如果没有请留空
+ 
+string postdata = "这里是提交的数据"; //post提交数据
+ 
+HttpResults hr = xjhttp.PostHtml(PostUrl, referer, postdata, false, cc);
+ 
+参数说明:
+xjhttp.PostHtml("提交的url", "Referer数据头","提交的数据", "Ajax标志不需要时请填写false", "自动处理Cookie对象");
+```
+
 #### 如何为httpcode 设置字符串Cookie与自动维护字符串Cookie
 >自动维护就是指根据每次请求的Response返回的Cookie，来对本地的Cookie进行更新 
 
@@ -278,4 +325,9 @@ new XJHTTP().CleanAll();//清除IE/Webbrowser所有内容 (注意,调用本方�
 
 更多介绍与示例，请看在线文档：http://bbs.msdn5.com/forum.php?mod=forumdisplay&fid=37&page=1&filter=typeid&typeid=23
 
+- [如何使用httpcode获取对方服务器响应的状态码](http://bbs.msdn5.com/forum.php?mod=viewthread&tid=551&extra=page%3D1%26filter%3Dtypeid%26typeid%3D23 "如何使用httpcode获取对方服务器响应的状态码") 
+- [如何为httpcode 设置代理](http://bbs.msdn5.com/forum.php?mod=viewthread&tid=556&extra=page%3D1%26filter%3Dtypeid%26typeid%3D23 "如何为httpcode 设置代理")
+- [如何使用httpcode 请求 图片](http://bbs.msdn5.com/forum.php?mod=viewthread&tid=553&extra=page%3D1%26filter%3Dtypeid%26typeid%3D23 "如何使用httpcode 请求 图片")
+- [如何添加/获取 httpcode的请求头](http://bbs.msdn5.com/forum.php?mod=viewthread&tid=559&extra=page%3D1%26filter%3Dtypeid%26typeid%3D23 "如何添加/获取 httpcode的请求头") 
+- [如何使用httpcode 提交https 设置证书](http://bbs.msdn5.com/forum.php?mod=viewthread&tid=555&extra=page%3D1%26filter%3Dtypeid%26typeid%3D23 "如何使用httpcode 提交https 设置证书")
 
