@@ -12,7 +12,7 @@
 让编程更简易,代码更简洁...
 版权声明:  
 本类库完全开源,只是基于微软官方提供的HttpWebRequest实现同步与异步的请求
-HttpCode Coding by **君临** 09-27/2014  
+HttpCode Coding by **君临**(https://github.com/msdn5) 09-27/2014  
 HttpCode.Core .net standard 2.0 implement by **stulzq**（xcmaster）09-01/2017
 
 **API文档**: http://bbs.msdn5.com/forum.php?mod=forumdisplay&fid=37&filter=typeid&typeid=23  
