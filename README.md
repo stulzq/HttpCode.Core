@@ -15,9 +15,10 @@
 HttpCode Coding by **君临** 09-27/2014  
 HttpCode.Core .net standard 2.0 implement by **stulzq**（xcmaster）09-01/2017
 
-API文档: http://bbs.msdn5.com/forum.php?mod=forumdisplay&fid=37&filter=typeid&typeid=23 
+**API文档**: http://bbs.msdn5.com/forum.php?mod=forumdisplay&fid=37&filter=typeid&typeid=23  
+> 这是HttpCode的文档，大部分和HttpCode.Core是一样的，可以参考，但是有一些地方有差异，主要是异步方法，然后移除了Wininet Api
 
-### HttpCode中的对象说明
+### HttpCode.Core中的对象说明
 - **HttpHelpers** 请求发起对象 请求过程与执行过程都在这个对象中.
 - **HttpItems** 请求设置对象 请求时需要配置的参数都在这个对象中
 - **HttpResults** 请求结果对象
@@ -168,5 +169,113 @@ HttpResults hr = xjhttp.PostHtml(PostUrl, referer, postdata, false, cc);
 参数说明:
 xjhttp.PostHtml("提交的url", "Referer数据头","提交的数据", "Ajax标志不需要时请填写false", "自动处理Cookie对象");
 ```
+
+#### 如何为httpcode 设置字符串Cookie与自动维护字符串Cookie
+>自动维护就是指根据每次请求的Response返回的Cookie，来对本地的Cookie进行更新 
+
+1. 手动维护Cookie
+```csharp
+HttpItems items = new HttpItems();//请求设置对象
+
+HttpHelpers helper = new HttpHelpers();//发起请求对象
+
+HttpResults hr = new HttpResults();//请求结果对象
+
+string cookie = "";//字符串方式处理
+
+items = new HttpItems(); //初始化请求对象,使其保持最新状态
+
+items.Cookie = cookie;  //使用字符串方式
+
+items.Url = "http://www.163.com/opt.php?do=login"; //请求URL地址
+
+items.Referer = "http://mrtx.163.com/"; //请求的Referer
+
+items.Method = "Post";//请求方式  Post
+
+items.Postdata = "username=ceshiyixia1&password=111111";//提交参数
+
+hr = helper.GetHtml(items); //正常模式得到请求结果
+
+//手动处理字符串Cookie方式   每次都需要剔除返回的hr.Cookie,并且需要与原先的cookie合并为新的Cookie
+
+string CookieStr = new XJHTTP().ClearCookie(hr.Cookie); //首先,剔除 服务器返回cookie中的无用项 
+
+cookie = new XJHTTP().UpdateCookie(CookieStr, hr.Cookie);//接着手动合并两个Cookie ,组成新的cookie给字符串对象使用
+
+//第二次请求
+items = new HttpItems();
+
+items.Url = "http://mrtx.u193.com/";
+
+items.Referer = "http://mrtx.u193.com/";
+
+items.Cookie = cookie;
+
+hr = helper.GetHtml(items);
+```
+2. 自动维护字符串Cookie
+```csharp
+HttpItems items = new HttpItems();//请求设置对象
+ 
+HttpHelpers helper = new HttpHelpers();//发起请求对象
+ 
+HttpResults hr = new HttpResults();//请求结果对象
+ 
+string cookie = "";//字符串方式处理
+ 
+items = new HttpItems(); //初始化请求对象,使其保持最新状态
+ 
+items.Cookie = cookie;  //使用字符串方式
+ 
+items.URL = "http://www.163.com/opt.php?do=login"; //请求URL地址
+ 
+items.Referer = "http://mrtx.163.com/"; //请求的Referer
+ 
+items.Method = "Post";//请求方式  Post
+ 
+items.Postdata = "username=ceshiyixia1&password=111111";//提交参数
+ 
+#region 自动处理字符串Cookie方式(新)  
+ 
+//使用ref将cookie传递进  GetHtml  重载方法    每次会   自动合并   上次  与  本次返回的cookie
+ 
+hr = helper.GetHtml(items,ref cookie); 
+ 
+#endregion
+//多次请求
+items = new HttpItems();
+ 
+items.URL = "http://mrtx.u193.com/";
+ 
+items.Referer = "http://mrtx.u193.com/";
+ 
+items.Cookie = cookie;
+ 
+//注意 如果有其他请求 请使用以下调用方式,保持cookie每次被自动合并
+hr = helper.GetHtml(items,ref cookie);
+```
+3. 手动处理Cookie的几种常用方式：
+```csharp
+new XJHTTP().UpdateCookie("旧Cookie", "请求后的Cookie");//合并Cookie，将cookie2与cookie1合并更新 返回字符串类型Cookie
+ 
+new XJHTTP().StringToCookie("网站Domain", "字符串Cookie内容");//将文字Cookie转换为CookieContainer 对象
+ 
+new XJHTTP().CookieTostring("CookieContainer 对象");//将 CookieContainer 对象转换为字符串类型
+ 
+new XJHTTP().GetAllCookie("CookieContainer 对象");//得到CookieContainer中的所有Cookie对象集合,返回List<Cookie>
+ 
+new XJHTTP().GetCookieByWininet("网站Url");//从Wininet 中获取字符串Cookie 可获取IE与Webbrowser控件中的Cookie
+ 
+new XJHTTP().GetAllCookieByHttpItems("请求设置对象");//从请求设置对象中获取Cookie集合,返回List<Cookie>
+ 
+new XJHTTP().ClearCookie("需要处理的字符串Cookie");//清理string类型Cookie.剔除无用项返回结果为null时遇见错误.
+ 
+new XJHTTP().SetIeCookie("设置Cookie的URL", "需要设置的Cookie");//可设置IE/Webbrowser控件Cookie
+ 
+new XJHTTP().CleanAll();//清除IE/Webbrowser所有内容 (注意,调用本方法需要管理员权限运行) CleanHistory();清空历史记录  CleanCookie(); 清空Cookie CleanTempFiles(); 清空临时文件
+```
+
+更多介绍与示例，请看在线文档：http://bbs.msdn5.com/forum.php?mod=forumdisplay&fid=37&page=1&filter=typeid&typeid=23
 
 
