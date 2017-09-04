@@ -8,6 +8,9 @@
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/stulzq/HttpCode.Core</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/stulzq/HttpCode.Core/blob/master/LICENSE</PackageLicenseUrl>
+    <AssemblyVersion>4.2.0.0</AssemblyVersion>
+    <FileVersion>4.2.0.0</FileVersion>
+    <Version>4.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
