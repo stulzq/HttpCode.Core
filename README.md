@@ -5,6 +5,9 @@
 
 **HttpCode.Core**是**HttpCode**（https://github.com/msdn5/HttpCodeLib ） 的.net standard 2.0 实现，.net core、.net framework都可以使用，更改了异步方法的实现。
 
+### 使用实例
+- [.net core 实现爬虫—抓取博客园的博文列表](http://www.cnblogs.com/stulzq/p/7474334.html ".net core 实现爬虫—抓取博客园的博文列表")
+
 ### 类库基本功能:
 - 基础功能1:基于HttpWebRequest方式 同步/异步 提交数据 包含(Get/Post)
 - 基础功能2:集合常用处理方法.处理页面结果/HTML数据更快捷
