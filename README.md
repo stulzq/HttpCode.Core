@@ -1,4 +1,7 @@
 # HttpCode.Core
+
+本库不推荐在 .NET Core 下使用
+
 简单、易用、高效 一个有态度的开源.Net Http请求框架!
 
 [![Latest version](https://img.shields.io/nuget/v/HttpCode.Core.svg)](https://www.nuget.org/packages/HttpCode.Core/) 
